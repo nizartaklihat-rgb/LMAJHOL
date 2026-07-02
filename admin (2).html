@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>LMAJHOL STORE — Admin</title>
+  <style>
+    :root {
+      --bg: #0b0d14;
+      --panel: #ffffff;
+      --text: #111111;
+      --text-muted: #666666;
+      --border: rgba(0,0,0,0.12);
+      --accent: #111111;
+      --accent-contrast: #ffffff;
+      --danger: #c0392b;
+      --success: #1e8e3e;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --shadow: 0 10px 30px rgba(0,0,0,0.08);
+      --transition: all 0.2s ease;
+      --max-width: 880px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      background: var(--bg);
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ===== Header ===== */
+    header {
+      background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 20px 0;
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .brand {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .brand span { color: #888; font-weight: 500; margin-left: 8px; }
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .header-link {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: var(--transition);
+    }
+    .header-link:hover { color: #fff; }
+    .header-status {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.7);
+    }
+    .header-status.connected {
+      background: rgba(30,142,62,0.2);
+      color: #6fcf7f;
+    }
+
+    /* ===== Main ===== */
+    main { padding: 40px 0 80px; }
+
+    .hero-title {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+    .hero-sub {
+      color: rgba(255,255,255,0.6);
+      font-size: 0.95rem;
+      margin-bottom: 36px;
+    }
+
+    /* ===== Panels ===== */
+    .panel {
+      background: var(--panel);
+      color: var(--text);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+    }
+    .panel h2 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+    }
+    .panel-desc {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-bottom: 20px;
+    }
+
+    /* ===== Forms ===== */
+    .field { margin-bottom: 16px; }
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 560px) {
+      .field-row { grid-template-columns: 1fr; }
+    }
+    label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+      color: #444;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      font-family: inherit;
+      background: #fff;
+      color: var(--text);
+      transition: var(--transition);
+    }
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: #111;
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.06);
+    }
+    textarea { min-height: 80px; resize: vertical; }
+    .hint {
+      font-size: 0.75rem;
+      color: #888;
+      margin-top: 4px;
+    }
+
+    /* ===== Buttons ===== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 22px;
+      background: var(--accent);
+      color: var(--accent-contrast);
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,0.18); }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-block { width: 100%; }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { background: #f5f5f5; }
+    .btn-danger {
+      background: transparent;
+      color: var(--danger);
+      border: 1px solid rgba(192,57,43,0.3);
+    }
+    .btn-danger:hover { background: rgba(192,57,43,0.08); }
+
+    /* ===== Product list ===== */
+    .product-list { display: flex; flex-direction: column; gap: 12px; }
+    .product-row {
+      display: grid;
+      grid-template-columns: 70px 1fr auto;
+      gap: 14px;
+      align-items: center;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: #fafafa;
+    }
+    @media (max-width: 560px) {
+      .product-row {
+        grid-template-columns: 60px 1fr;
+        grid-template-rows: auto auto;
+      }
+      .product-row .product-actions {
+        grid-column: 1 / -1;
+        justify-content: flex-end;
+      }
+    }
+    .product-thumb {
+      width: 70px;
+      height: 70px;
+      object-fit: cover;
+      border-radius: 6px;
+      background: #ddd;
+    }
+    .product-info-row { min-width: 0; }
+    .product-info-row .pn {
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 2px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .product-info-row .pm {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+    .product-actions {
+      display: flex;
+      gap: 6px;
+    }
+    .icon-btn {
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      transition: var(--transition);
+    }
+    .icon-btn:hover { background: #eee; color: var(--text); }
+    .icon-btn.danger:hover { background: rgba(192,57,43,0.1); color: var(--danger); border-color: rgba(192,57,43,0.3); }
+
+    /* ===== Empty state ===== */
+    .empty {
+      text-align: center;
+      padding: 30px 20px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* ===== Status banner ===== */
+    .banner {
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .banner.show { display: block; }
+    .banner.success { background: rgba(30,142,62,0.1); color: #1e6e2e; border: 1px solid rgba(30,142,62,0.2); }
+    .banner.error { background: rgba(192,57,43,0.08); color: var(--danger); border: 1px solid rgba(192,57,43,0.2); }
+    .banner.loading { background: rgba(0,0,0,0.04); color: #444; border: 1px solid var(--border); }
+
+    /* ===== Setup help ===== */
+    .help-list {
+      padding-left: 18px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      line-height: 1.7;
+    }
+    .help-list code {
+      background: #f0f0f0;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.85em;
+    }
+    .help-list a { color: #111; }
+
+    /* ===== Image preview ===== */
+    .preview-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 10px;
+    }
+    @media (max-width: 560px) { .preview-row { grid-template-columns: 1fr; } }
+    .preview-box {
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px;
+      text-align: center;
+      min-height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fafafa;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+    .preview-box img {
+      max-width: 100%;
+      max-height: 140px;
+      border-radius: 4px;
+    }
+
+    /* ===== Image upload dropzone ===== */
+    .upload-row {
+      display: flex;
+      gap: 8px;
+      align-items: stretch;
+      margin-top: 0;
+    }
+    .upload-row input[type="url"] { flex: 1; }
+    .upload-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 0 16px;
+      background: #f0f0f0;
+      color: #111;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+    .upload-btn:hover { background: #e2e2e2; border-color: #999; }
+    .upload-btn input[type="file"] { display: none; }
+    .upload-btn.uploading {
+      background: #e8e8e8;
+      cursor: wait;
+      opacity: 0.8;
+    }
+
+    .upload-status {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+      min-height: 16px;
+    }
+    .upload-status.success { color: var(--success); }
+    .upload-status.error { color: var(--danger); }
+
+    .upload-progress {
+      margin-top: 6px;
+      height: 4px;
+      background: #eee;
+      border-radius: 2px;
+      overflow: hidden;
+      display: none;
+    }
+    .upload-progress.show { display: block; }
+    .upload-progress-bar {
+      height: 100%;
+      background: #111;
+      width: 0%;
+      transition: width 0.2s ease;
+    }
+
+    .footer-note {
+      text-align: center;
+      color: rgba(255,255,255,0.45);
+      font-size: 0.78rem;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container header-row">
+      <div class="brand">LMAJHOL STORE <span>// Admin</span></div>
+      <div class="header-actions">
+        <span class="header-status" id="connStatus">Not connected</span>
+        <a href="index.html" class="header-link">← Back to site</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <h1 class="hero-title">Product Manager</h1>
+      <p class="hero-sub">Add, edit, and remove products on your store. Upload product images directly from your device — they're stored in your repo's Releases and the URL is filled in automatically. Changes appear on your live site within seconds.</p>
+
+      <!-- ============== CONNECTION PANEL ============== -->
+      <section class="panel" id="connPanel">
+        <h2>1. Connect to GitHub</h2>
+        <p class="panel-desc">Enter your GitHub details once. They are saved in this browser only (localStorage) and never sent anywhere except GitHub.</p>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="repoOwner">GitHub Username</label>
+            <input id="repoOwner" type="text" placeholder="e.g. nizartaklihat-rgb" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="repoName">Repository Name</label>
+            <input id="repoName" type="text" placeholder="e.g. fareed-studio" autocomplete="off">
+          </div>
+        </div>
+        <div class="field">
+          <label for="token">Personal Access Token (PAT)</label>
+          <input id="token" type="password" placeholder="github_pat_... or ghp_..." autocomplete="off">
+          <p class="hint">Needs <code>Contents: Read &amp; Write</code> permission on this repo (covers products.json edits <em>and</em> Release image uploads). <a href="#" id="showHelp">How do I create one?</a></p>
+        </div>
+        <div class="field">
+          <label for="branch">Branch</label>
+          <input id="branch" type="text" placeholder="main" value="main" autocomplete="off">
+          <p class="hint">Usually <code>main</code>. Change if your default branch is named differently.</p>
+        </div>
+
+        <button class="btn btn-block" id="connectBtn">Connect &amp; Load Products</button>
+
+        <div id="connHelp" style="display:none; margin-top:24px; padding-top:20px; border-top:1px solid var(--border);">
+          <h2 style="margin-bottom:12px;">How to create your GitHub token</h2>
+          <ol class="help-list">
+            <li>Go to <a href="https://github.com/settings/tokens?type=beta" target="_blank" rel="noopener">GitHub Settings → Developer settings → Personal access tokens → Fine-grained tokens</a> and click <strong>Generate new token</strong>.</li>
+            <li><strong>Token name:</strong> anything (e.g. <code>fareed-studio admin</code>).</li>
+            <li><strong>Expiration:</strong> choose 90 days or longer (you can renew anytime).</li>
+            <li><strong>Repository access:</strong> choose <strong>"Only select repositories"</strong> → pick your <code>fareed-studio</code> repo.</li>
+            <li><strong>Permissions:</strong> expand <em>Repository permissions</em>, find <strong>Contents</strong>, and set it to <strong>Read and write</strong>.<br>
+            <span style="display:block; margin-top:6px; color:#666; font-size:0.82rem;">That single permission covers everything this panel needs: editing <code>products.json</code>, creating the Releases tag, and uploading image assets. No other permission toggles are required.</span></li>
+            <li>Click <strong>Generate token</strong>, copy the <code>github_pat_...</code> string, and paste it in the field above.</li>
+            <li>The token only gives access to this one repo.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- ============== PRODUCT LIST PANEL ============== -->
+      <section class="panel" id="productsPanel" style="display:none;">
+        <h2>2. Your Products</h2>
+        <p class="panel-desc">Currently live on your site. Drag/reorder not supported — products display in the order shown below.</p>
+        <div id="banner" class="banner"></div>
+        <div id="productList" class="product-list"></div>
+      </section>
+
+      <!-- ============== ADD / EDIT FORM PANEL ============== -->
+      <section class="panel" id="formPanel" style="display:none;">
+        <h2 id="formTitle">3. Add New Product</h2>
+        <p class="panel-desc">Fill in the details below. The ID is assigned automatically.</p>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="pName">Full Product Name</label>
+            <input id="pName" type="text" placeholder="e.g. STARS TEE">
+          </div>
+          <div class="field">
+            <label for="pShort">Short Name (optional)</label>
+            <input id="pShort" type="text" placeholder="e.g. STARS TEE">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="pPrice">Price (MAD)</label>
+            <input id="pPrice" type="number" min="0" step="1" value="160">
+          </div>
+          <div class="field">
+            <label for="pId">ID (auto)</label>
+            <input id="pId" type="text" readonly placeholder="auto">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="pWhite">White Version — Image</label>
+          <div class="upload-row">
+            <input id="pWhite" type="url" placeholder="Paste image URL — or upload →">
+            <label class="upload-btn" for="pWhiteFile" id="pWhiteBtn">
+              ↑ Upload
+              <input id="pWhiteFile" type="file" accept="image/*">
+            </label>
+          </div>
+          <div class="upload-status" id="whiteStatus"></div>
+          <div class="upload-progress" id="whiteProgress"><div class="upload-progress-bar"></div></div>
+          <div class="preview-box" id="whitePreview" style="margin-top:8px;">White version preview</div>
+        </div>
+
+        <div class="field">
+          <label for="pBlack">Black Version — Image</label>
+          <div class="upload-row">
+            <input id="pBlack" type="url" placeholder="Paste image URL — or upload →">
+            <label class="upload-btn" for="pBlackFile" id="pBlackBtn">
+              ↑ Upload
+              <input id="pBlackFile" type="file" accept="image/*">
+            </label>
+          </div>
+          <div class="upload-status" id="blackStatus"></div>
+          <div class="upload-progress" id="blackProgress"><div class="upload-progress-bar"></div></div>
+          <div class="preview-box" id="blackPreview" style="margin-top:8px;">Black version preview</div>
+        </div>
+
+        <div class="field">
+          <label for="pDesc">Description</label>
+          <textarea id="pDesc" placeholder="Premium heavyweight cotton. Oversized fit. Designed in Casablanca.">Premium heavyweight cotton. Oversized fit. Designed in Casablanca.</textarea>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:24px; flex-wrap:wrap;">
+          <button class="btn" id="saveBtn">Save Product</button>
+          <button class="btn btn-ghost" id="cancelEditBtn" style="display:none;">Cancel Edit</button>
+          <button class="btn btn-ghost" id="resetFormBtn">Clear Form</button>
+        </div>
+      </section>
+
+      <p class="footer-note">LMAJHOL STORE Admin Panel · data lives in your own GitHub repo</p>
+    </div>
+  </main>
+
+  <script>
+    // ============================================================
+    // LMAJHOL STORE — Admin Panel
+    // Pure client-side. Talks directly to the GitHub Contents API.
+    // No backend, no database — your repo IS the database.
+    // ============================================================
+
+    const LS_KEY = 'lmajhol_admin_config_v1';
+
+    // ---- DOM ----
+    const $ = (id) => document.getElementById(id);
+    const repoOwnerInput = $('repoOwner');
+    const repoNameInput  = $('repoName');
+    const tokenInput     = $('token');
+    const branchInput    = $('branch');
+    const connectBtn     = $('connectBtn');
+    const connStatus     = $('connStatus');
+    const connHelp       = $('connHelp');
+    const showHelp       = $('showHelp');
+    const connPanel      = $('connPanel');
+    const productsPanel  = $('productsPanel');
+    const formPanel      = $('formPanel');
+    const productList    = $('productList');
+    const banner         = $('banner');
+    const formTitle      = $('formTitle');
+    const saveBtn        = $('saveBtn');
+    const cancelEditBtn  = $('cancelEditBtn');
+    const resetFormBtn   = $('resetFormBtn');
+    const pName = $('pName'), pShort = $('pShort'), pPrice = $('pPrice'),
+          pId = $('pId'), pWhite = $('pWhite'), pBlack = $('pBlack'), pDesc = $('pDesc');
+    const whitePreview = $('whitePreview');
+    const blackPreview = $('blackPreview');
+    const pWhiteFile = $('pWhiteFile'), pBlackFile = $('pBlackFile');
+    const pWhiteBtn  = $('pWhiteBtn'),  pBlackBtn  = $('pBlackBtn');
+    const whiteStatus = $('whiteStatus'), blackStatus = $('blackStatus');
+    const whiteProgress = $('whiteProgress'), blackProgress = $('blackProgress');
+
+    // ---- State ----
+    let state = {
+      owner: '',
+      repo: '',
+      token: '',
+      branch: 'main',
+      connected: false,
+      products: [],
+      editingId: null  // null = adding new, number = editing existing
+    };
+
+    // ---- LocalStorage persistence ----
+    function saveConfig() {
+      try {
+        localStorage.setItem(LS_KEY, JSON.stringify({
+          owner: state.owner,
+          repo: state.repo,
+          token: state.token,
+          branch: state.branch
+        }));
+      } catch (e) {}
+    }
+    function loadConfig() {
+      try {
+        const cfg = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+        if (cfg.owner)   state.owner = cfg.owner;
+        if (cfg.repo)    state.repo = cfg.repo;
+        if (cfg.token)   state.token = cfg.token;
+        if (cfg.branch)  state.branch = cfg.branch;
+      } catch (e) {}
+    }
+
+    // ---- Helpers ----
+    function showBanner(msg, type = 'loading') {
+      banner.className = 'banner show ' + type;
+      banner.textContent = msg;
+    }
+    function hideBanner() { banner.className = 'banner'; }
+    function setConnStatus(text, ok = false) {
+      connStatus.textContent = text;
+      connStatus.classList.toggle('connected', ok);
+    }
+
+    // Show preview when URL is typed
+    function attachPreview(input, box) {
+      input.addEventListener('input', () => {
+        const url = input.value.trim();
+        if (!url) {
+          box.innerHTML = box.dataset.placeholder || 'Image preview';
+          return;
+        }
+        box.innerHTML = `<img src="${url}" alt="preview" onerror="this.parentNode.innerHTML='⚠ Could not load image — check URL'">`;
+      });
+    }
+    whitePreview.dataset.placeholder = 'White version preview';
+    blackPreview.dataset.placeholder = 'Black version preview';
+    attachPreview(pWhite, whitePreview);
+    attachPreview(pBlack, blackPreview);
+
+    // ---- Image upload to GitHub Releases ----
+    // Uploads a File to the repo's "products-images" release tag and
+    // returns the stable download URL. The URL has the form:
+    //   https://github.com/{owner}/{repo}/releases/download/products-images/{filename}
+    // These files do NOT count against the repo size (they live in the
+    // Releases asset storage, not git). They work as <img src> URLs.
+    const RELEASE_TAG = 'products-images';
+    const RELEASE_NAME = 'Product Images';
+
+    // Cache the release upload URL + node_id so we don't fetch it twice
+    let _releaseCache = null;
+
+    async function getOrCreateRelease() {
+      if (_releaseCache) return _releaseCache;
+      // Try to fetch existing release by tag
+      const getURL = `https://api.github.com/repos/${state.owner}/${state.repo}/releases/tags/${encodeURIComponent(RELEASE_TAG)}`;
+      let res = await fetch(getURL, { headers: githubHeaders() });
+      if (res.ok) {
+        const data = await res.json();
+        _releaseCache = { id: data.id, upload_url: data.upload_url };
+        return _releaseCache;
+      }
+      if (res.status !== 404) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error('Cannot read release: ' + (err.message || res.status));
+      }
+      // Doesn't exist → create it. We need the commit SHA of the
+      // branch tip (target_commitish).
+      const branchRes = await fetch(
+        `https://api.github.com/repos/${state.owner}/${state.repo}/branches/${encodeURIComponent(state.branch)}`,
+        { headers: githubHeaders() }
+      );
+      if (!branchRes.ok) {
+        const err = await branchRes.json().catch(() => ({}));
+        throw new Error('Cannot read branch: ' + (err.message || branchRes.status));
+      }
+      const branchData = await branchRes.json();
+      const targetSha = branchData.commit.sha;
+      const createRes = await fetch(
+        `https://api.github.com/repos/${state.owner}/${state.repo}/releases`,
+        {
+          method: 'POST',
+          headers: { ...githubHeaders(), 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            tag_name: RELEASE_TAG,
+            target_commitish: targetSha,
+            name: RELEASE_NAME,
+            body: 'Auto-managed by LMAJHOL STORE admin panel. Don\'t delete this release — product images live here.',
+            draft: false,
+            prerelease: false
+          })
+        }
+      );
+      if (!createRes.ok) {
+        const err = await createRes.json().catch(() => ({}));
+        throw new Error('Cannot create release: ' + (err.message || createRes.status));
+      }
+      const data = await createRes.json();
+      _releaseCache = { id: data.id, upload_url: data.upload_url };
+      return _releaseCache;
+    }
+
+    // Make a filename unique by prefixing with timestamp + random.
+    // This prevents collisions when uploading two products with
+    // "IMG_0001.jpg" etc., and keeps the original extension.
+    function uniqueFilename(originalName) {
+      const safe = (originalName || 'image').replace(/[^a-zA-Z0-9._-]/g, '_');
+      const dotIdx = safe.lastIndexOf('.');
+      const stem = dotIdx > 0 ? safe.slice(0, dotIdx) : safe;
+      const ext  = dotIdx > 0 ? safe.slice(dotIdx) : '';
+      const ts = Date.now().toString(36);
+      const rand = Math.random().toString(36).slice(2, 6);
+      return `${stem}-${ts}${rand}${ext}`;
+    }
+
+    /**
+     * Uploads a File to the release and returns the public download URL.
+     */
+    async function uploadAsset(file, btnEl, statusEl, progressEl) {
+      if (!state.connected) throw new Error('Connect to GitHub first.');
+      if (!file) throw new Error('No file selected.');
+      if (file.size > 100 * 1024 * 1024) {
+        throw new Error('File too large (max 100 MB).');
+      }
+
+      const release = await getOrCreateRelease();
+      const filename = uniqueFilename(file.name);
+      const uploadURL = release.upload_url.replace('{?name,label}', `?name=${encodeURIComponent(filename)}`);
+
+      btnEl.classList.add('uploading');
+      statusEl.className = 'upload-status';
+      statusEl.textContent = `Uploading ${filename}...`;
+      progressEl.classList.add('show');
+      const bar = progressEl.querySelector('.upload-progress-bar');
+      bar.style.width = '0%';
+
+      try {
+        const responseText = await new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', uploadURL);
+          xhr.setRequestHeader('Authorization', 'Bearer ' + state.token);
+          xhr.setRequestHeader('Accept', 'application/vnd.github+json');
+          xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
+          xhr.setRequestHeader('X-GitHub-Api-Version', '2022-11-28');
+          xhr.upload.addEventListener('progress', (ev) => {
+            if (ev.lengthComputable) {
+              const pct = Math.round((ev.loaded / ev.total) * 100);
+              bar.style.width = pct + '%';
+            }
+          });
+          xhr.addEventListener('load', () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              resolve(xhr.responseText);
+            } else {
+              let msg = 'GitHub upload failed (HTTP ' + xhr.status + ')';
+              try { msg = JSON.parse(xhr.responseText).message || msg; } catch (e) {}
+              reject(new Error(msg));
+            }
+          });
+          xhr.addEventListener('error', () => reject(new Error('Network error during upload.')));
+          xhr.addEventListener('abort', () => reject(new Error('Upload cancelled.')));
+          xhr.send(file);
+        });
+
+        const data = JSON.parse(responseText);
+        const downloadURL = data.browser_download_url;
+        if (!downloadURL) throw new Error('GitHub did not return a download URL.');
+
+        statusEl.className = 'upload-status success';
+        statusEl.textContent = '✓ Uploaded — ' + (file.size / 1024).toFixed(0) + ' KB';
+        setTimeout(() => progressEl.classList.remove('show'), 800);
+        return downloadURL;
+      } catch (err) {
+        statusEl.className = 'upload-status error';
+        statusEl.textContent = '✕ ' + err.message;
+        progressEl.classList.remove('show');
+        throw err;
+      } finally {
+        btnEl.classList.remove('uploading');
+      }
+    }
+
+    // Wire up the two file inputs
+    pWhiteFile.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      try {
+        const url = await uploadAsset(file, pWhiteBtn, whiteStatus, whiteProgress);
+        pWhite.value = url;
+        pWhite.dispatchEvent(new Event('input'));
+      } catch (err) { /* already shown in status */ }
+      e.target.value = '';
+    });
+    pBlackFile.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      try {
+        const url = await uploadAsset(file, pBlackBtn, blackStatus, blackProgress);
+        pBlack.value = url;
+        pBlack.dispatchEvent(new Event('input'));
+      } catch (err) { /* already shown in status */ }
+      e.target.value = '';
+    });
+
+    // Show/hide setup help
+    showHelp.addEventListener('click', (e) => {
+      e.preventDefault();
+      connHelp.style.display = connHelp.style.display === 'none' ? 'block' : 'none';
+    });
+
+    // ---- GitHub API ----
+    function githubHeaders() {
+      return {
+        'Authorization': 'Bearer ' + state.token,
+        'Accept': 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28'
+      };
+    }
+
+    async function fetchProductsFile() {
+      // GET /repos/{owner}/{repo}/contents/products.json?ref={branch}
+      const url = `https://api.github.com/repos/${state.owner}/${state.repo}/contents/products.json?ref=${encodeURIComponent(state.branch)}`;
+      const res = await fetch(url, { headers: githubHeaders() });
+      if (res.status === 404) {
+        // File doesn't exist yet — start with empty array.
+        return { content: null, sha: null, products: [] };
+      }
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || ('GitHub API error: ' + res.status));
+      }
+      const data = await res.json();
+      // content is base64-encoded
+      let text = '';
+      if (data.content) {
+        text = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
+      }
+      let products = [];
+      try { products = JSON.parse(text); if (!Array.isArray(products)) products = []; } catch (e) {}
+      return { content: text, sha: data.sha, products };
+    }
+
+    async function commitProductsFile(products, sha) {
+      const text = JSON.stringify(products, null, 2);
+      const encoded = btoa(unescape(encodeURIComponent(text)));
+      const url = `https://api.github.com/repos/${state.owner}/${state.repo}/contents/products.json`;
+      const body = {
+        message: state.editingId !== null
+          ? `Update product #${state.editingId} via admin panel`
+          : (state._deletingId !== undefined
+              ? `Delete product #${state._deletingId} via admin panel`
+              : `Add product via admin panel`),
+        content: encoded,
+        branch: state.branch
+      };
+      if (sha) body.sha = sha;
+      const res = await fetch(url, {
+        method: 'PUT',
+        headers: githubHeaders(),
+        body: JSON.stringify(body)
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || ('GitHub API error: ' + res.status));
+      }
+      return res.json();
+    }
+
+    // ---- Connect & Load ----
+    connectBtn.addEventListener('click', async () => {
+      state.owner = repoOwnerInput.value.trim();
+      state.repo = repoNameInput.value.trim();
+      state.token = tokenInput.value.trim();
+      state.branch = branchInput.value.trim() || 'main';
+
+      if (!state.owner || !state.repo || !state.token) {
+        alert('Please fill in username, repo name, and token.');
+        return;
+      }
+
+      connectBtn.disabled = true;
+      connectBtn.textContent = 'Connecting...';
+      setConnStatus('Connecting...', false);
+
+      try {
+        const { products, sha } = await fetchProductsFile();
+        state.products = products;
+        state._sha = sha;
+        state.connected = true;
+        saveConfig();
+        setConnStatus('Connected to ' + state.owner + '/' + state.repo, true);
+        connPanel.style.display = 'none';
+        productsPanel.style.display = 'block';
+        formPanel.style.display = 'block';
+        renderProductList();
+        // Pre-fill branch/owner/repo/token fields in case user reopens
+        repoOwnerInput.value = state.owner;
+        repoNameInput.value = state.repo;
+        tokenInput.value = state.token;
+        branchInput.value = state.branch;
+      } catch (err) {
+        alert('Connection failed:\n' + err.message);
+        setConnStatus('Connection failed', false);
+      } finally {
+        connectBtn.disabled = false;
+        connectBtn.textContent = 'Connect & Load Products';
+      }
+    });
+
+    // ---- Render product list ----
+    function renderProductList() {
+      if (!state.products.length) {
+        productList.innerHTML = '<div class="empty">No products yet. Add your first one below.</div>';
+        return;
+      }
+      productList.innerHTML = state.products.map(p => `
+        <div class="product-row">
+          <img class="product-thumb" src="${escapeAttr(p.image)}" alt="" onerror="this.style.background='#ddd'; this.removeAttribute('src');">
+          <div class="product-info-row">
+            <div class="pn">#${p.id} — ${escapeHtml(p.name)}</div>
+            <div class="pm">${p.price} MAD · ${escapeHtml(p.shortName || p.name)}</div>
+          </div>
+          <div class="product-actions">
+            <button class="icon-btn" title="Edit" data-edit="${p.id}">✎</button>
+            <button class="icon-btn danger" title="Delete" data-delete="${p.id}">✕</button>
+          </div>
+        </div>
+      `).join('');
+
+      productList.querySelectorAll('[data-edit]').forEach(btn => {
+        btn.addEventListener('click', () => startEdit(Number(btn.dataset.edit)));
+      });
+      productList.querySelectorAll('[data-delete]').forEach(btn => {
+        btn.addEventListener('click', () => deleteProduct(Number(btn.dataset.delete)));
+      });
+    }
+
+    // ---- Add / Edit ----
+    function nextId() {
+      return state.products.length ? Math.max(...state.products.map(p => p.id)) + 1 : 1;
+    }
+
+    function startEdit(id) {
+      const p = state.products.find(x => x.id === id);
+      if (!p) return;
+      state.editingId = id;
+      formTitle.textContent = '3. Edit Product #' + id;
+      pName.value = p.name || '';
+      pShort.value = p.shortName || '';
+      pPrice.value = p.price || 160;
+      pId.value = id;
+      pWhite.value = p.image || '';
+      pBlack.value = p.blackImage || '';
+      pDesc.value = p.desc || '';
+      // Trigger previews
+      pWhite.dispatchEvent(new Event('input'));
+      pBlack.dispatchEvent(new Event('input'));
+      cancelEditBtn.style.display = 'inline-flex';
+      saveBtn.textContent = 'Update Product';
+      formPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    cancelEditBtn.addEventListener('click', () => {
+      state.editingId = null;
+      resetForm();
+    });
+
+    resetFormBtn.addEventListener('click', () => {
+      if (state.editingId !== null) {
+        if (!confirm('Discard changes?')) return;
+      }
+      state.editingId = null;
+      resetForm();
+    });
+
+    function resetForm() {
+      formTitle.textContent = '3. Add New Product';
+      pName.value = '';
+      pShort.value = '';
+      pPrice.value = 160;
+      pId.value = '';
+      pWhite.value = '';
+      pBlack.value = '';
+      pDesc.value = 'Premium heavyweight cotton. Oversized fit. Designed in Casablanca.';
+      whitePreview.innerHTML = 'White version preview';
+      blackPreview.innerHTML = 'Black version preview';
+      cancelEditBtn.style.display = 'none';
+      saveBtn.textContent = 'Save Product';
+    }
+
+    saveBtn.addEventListener('click', async () => {
+      const name = pName.value.trim();
+      if (!name) { alert('Please enter a product name.'); return; }
+      if (!pWhite.value.trim() || !pBlack.value.trim()) {
+        if (!confirm('One of the image URLs is empty. Save anyway?')) return;
+      }
+
+      saveBtn.disabled = true;
+      const wasEditing = state.editingId !== null;
+      const id = wasEditing ? state.editingId : nextId();
+      const newProduct = {
+        id: id,
+        name: name,
+        shortName: pShort.value.trim() || name,
+        price: Number(pPrice.value) || 0,
+        image: pWhite.value.trim(),
+        blackImage: pBlack.value.trim(),
+        desc: pDesc.value.trim()
+      };
+
+      try {
+        showBanner('Saving to GitHub...', 'loading');
+        // Re-fetch latest sha in case it changed (defensive)
+        const latest = await fetchProductsFile();
+        let updated;
+        if (wasEditing) {
+          updated = latest.products.map(p => p.id === id ? newProduct : p);
+        } else {
+          updated = [...latest.products, newProduct];
+        }
+        await commitProductsFile(updated, latest.sha);
+        state.products = updated;
+        state.editingId = null;
+        renderProductList();
+        resetForm();
+        showBanner('✓ Saved. Your live site is updated.', 'success');
+        setTimeout(hideBanner, 4000);
+      } catch (err) {
+        showBanner('✕ ' + err.message, 'error');
+      } finally {
+        saveBtn.disabled = false;
+      }
+    });
+
+    async function deleteProduct(id) {
+      const p = state.products.find(x => x.id === id);
+      if (!p) return;
+      if (!confirm(`Delete "${p.name}"?\nThis will remove it from your live site.`)) return;
+      try {
+        showBanner('Deleting from GitHub...', 'loading');
+        const latest = await fetchProductsFile();
+        state._deletingId = id;
+        const updated = latest.products.filter(x => x.id !== id);
+        await commitProductsFile(updated, latest.sha);
+        delete state._deletingId;
+        state.products = updated;
+        if (state.editingId === id) { state.editingId = null; resetForm(); }
+        renderProductList();
+        showBanner('✓ Deleted. Your live site is updated.', 'success');
+        setTimeout(hideBanner, 4000);
+      } catch (err) {
+        delete state._deletingId;
+        showBanner('✕ ' + err.message, 'error');
+      }
+    }
+
+    // ---- HTML escape helpers ----
+    function escapeHtml(s) {
+      return String(s || '').replace(/[&<>"']/g, c => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+      }[c]));
+    }
+    function escapeAttr(s) { return escapeHtml(s); }
+
+    // ---- Boot: restore saved config ----
+    loadConfig();
+    if (state.owner)  repoOwnerInput.value = state.owner;
+    if (state.repo)   repoNameInput.value  = state.repo;
+    if (state.token)  tokenInput.value     = state.token;
+    if (state.branch) branchInput.value    = state.branch;
+    if (state.owner && state.repo && state.token) {
+      setConnStatus('Saved config found — click to reconnect', false);
+    }
+  </script>
+</body>
+</html>
