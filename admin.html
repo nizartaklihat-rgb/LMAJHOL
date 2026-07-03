@@ -702,7 +702,107 @@
     }
 
     /**
-     * Uploads a File to the release and returns the public download URL.
+     * PRIMARY upload path: GitHub Releases (assets don't bloat git history).
+     * Returns the public download URL on success.
+     * Throws a tagged error on failure so the caller can fall back.
+     */
+    async function uploadAssetViaReleases(file, btnEl, statusEl, progressEl) {
+      const release = await getOrCreateRelease();
+      const filename = uniqueFilename(file.name);
+      const uploadURL = release.upload_url.replace('{?name,label}', `?name=${encodeURIComponent(filename)}`);
+
+      statusEl.className = 'upload-status';
+      statusEl.textContent = `Uploading ${filename} to Releases...`;
+      progressEl.classList.add('show');
+      const bar = progressEl.querySelector('.upload-progress-bar');
+      bar.style.width = '0%';
+
+      const responseText = await new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', uploadURL);
+        xhr.setRequestHeader('Authorization', 'Bearer ' + state.token);
+        xhr.setRequestHeader('Accept', 'application/vnd.github+json');
+        xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
+        xhr.setRequestHeader('X-GitHub-Api-Version', '2022-11-28');
+        xhr.upload.addEventListener('progress', (ev) => {
+          if (ev.lengthComputable) {
+            const pct = Math.round((ev.loaded / ev.total) * 100);
+            bar.style.width = pct + '%';
+          }
+        });
+        xhr.addEventListener('load', () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            resolve(xhr.responseText);
+          } else {
+            let msg = 'HTTP ' + xhr.status + ': ';
+            try { msg += JSON.parse(xhr.responseText).message; } catch (e) { msg += xhr.responseText.slice(0, 200); }
+            reject(new Error(msg));
+          }
+        });
+        // Network-level failure (CORS, DNS, offline, file:// origin, etc.)
+        xhr.addEventListener('error', () => reject(new Error('CORS_NETWORK_ERROR')));
+        xhr.addEventListener('abort', () => reject(new Error('Upload cancelled.')));
+        xhr.send(file);
+      });
+
+      const data = JSON.parse(responseText);
+      const downloadURL = data.browser_download_url;
+      if (!downloadURL) throw new Error('GitHub did not return a download URL.');
+      return { url: downloadURL, method: 'Releases' };
+    }
+
+    /**
+     * FALLBACK upload path: Contents API (commits file to repo as base64).
+     * Always works with CORS because we already use this API for products.json.
+     * Files live in the images/ folder of your repo (so they DO count toward
+     * git history, but for typical product images this is totally fine).
+     */
+    async function uploadAssetViaContentsAPI(file, statusEl) {
+      const filename = uniqueFilename(file.name);
+      const path = `images/${filename}`;
+      const url = `https://api.github.com/repos/${state.owner}/${state.repo}/contents/${path}?ref=${encodeURIComponent(state.branch)}`;
+
+      statusEl.className = 'upload-status';
+      statusEl.textContent = `Uploading ${filename} to repo (fallback)...`;
+
+      // Read file as ArrayBuffer → base64
+      const buf = await file.arrayBuffer();
+      // base64-encode UTF-8-safe (btoa only handles Latin1)
+      const bytes = new Uint8Array(buf);
+      let binary = '';
+      const chunk = 0x8000;
+      for (let i = 0; i < bytes.length; i += chunk) {
+        binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+      }
+      const base64 = btoa(binary);
+
+      const res = await fetch(url, {
+        method: 'PUT',
+        headers: { ...githubHeaders(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: `Upload product image: ${filename}`,
+          content: base64,
+          branch: state.branch
+        })
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error('Contents API failed: ' + (err.message || res.status));
+      }
+      const data = await res.json();
+      // data.content.download_url is the raw GitHub URL — works as <img src>
+      // For private repos it's signed; for public repos it's just raw.githubusercontent.com
+      const downloadURL = data.content && data.content.download_url;
+      if (!downloadURL) {
+        // Build the raw URL manually as a fallback
+        return { url: `https://raw.githubusercontent.com/${state.owner}/${state.repo}/${state.branch}/${path}`, method: 'Repo (Contents API)' };
+      }
+      return { url: downloadURL, method: 'Repo (Contents API)' };
+    }
+
+    /**
+     * Main upload entry point — tries Releases first, falls back to Contents
+     * API on network/CORS failure. Returns the public URL.
      */
     async function uploadAsset(file, btnEl, statusEl, progressEl) {
       if (!state.connected) throw new Error('Connect to GitHub first.');
@@ -711,53 +811,27 @@
         throw new Error('File too large (max 100 MB).');
       }
 
-      const release = await getOrCreateRelease();
-      const filename = uniqueFilename(file.name);
-      const uploadURL = release.upload_url.replace('{?name,label}', `?name=${encodeURIComponent(filename)}`);
-
       btnEl.classList.add('uploading');
-      statusEl.className = 'upload-status';
-      statusEl.textContent = `Uploading ${filename}...`;
-      progressEl.classList.add('show');
-      const bar = progressEl.querySelector('.upload-progress-bar');
-      bar.style.width = '0%';
-
       try {
-        const responseText = await new Promise((resolve, reject) => {
-          const xhr = new XMLHttpRequest();
-          xhr.open('POST', uploadURL);
-          xhr.setRequestHeader('Authorization', 'Bearer ' + state.token);
-          xhr.setRequestHeader('Accept', 'application/vnd.github+json');
-          xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
-          xhr.setRequestHeader('X-GitHub-Api-Version', '2022-11-28');
-          xhr.upload.addEventListener('progress', (ev) => {
-            if (ev.lengthComputable) {
-              const pct = Math.round((ev.loaded / ev.total) * 100);
-              bar.style.width = pct + '%';
-            }
-          });
-          xhr.addEventListener('load', () => {
-            if (xhr.status >= 200 && xhr.status < 300) {
-              resolve(xhr.responseText);
-            } else {
-              let msg = 'GitHub upload failed (HTTP ' + xhr.status + ')';
-              try { msg = JSON.parse(xhr.responseText).message || msg; } catch (e) {}
-              reject(new Error(msg));
-            }
-          });
-          xhr.addEventListener('error', () => reject(new Error('Network error during upload.')));
-          xhr.addEventListener('abort', () => reject(new Error('Upload cancelled.')));
-          xhr.send(file);
-        });
-
-        const data = JSON.parse(responseText);
-        const downloadURL = data.browser_download_url;
-        if (!downloadURL) throw new Error('GitHub did not return a download URL.');
+        let result;
+        try {
+          result = await uploadAssetViaReleases(file, btnEl, statusEl, progressEl);
+        } catch (err) {
+          // If the error is CORS/network or anything other than a clean HTTP
+          // error from GitHub, fall back to the Contents API.
+          if (err.message === 'CORS_NETWORK_ERROR' || err.message.includes('Cannot read release') || err.message.includes('Cannot create release') || err.message.includes('Cannot read branch')) {
+            statusEl.textContent = 'Releases upload blocked — retrying via repo...';
+            progressEl.classList.remove('show');
+            result = await uploadAssetViaContentsAPI(file, statusEl);
+          } else {
+            throw err;
+          }
+        }
 
         statusEl.className = 'upload-status success';
-        statusEl.textContent = '✓ Uploaded — ' + (file.size / 1024).toFixed(0) + ' KB';
+        statusEl.textContent = `✓ Uploaded via ${result.method} — ${(file.size / 1024).toFixed(0)} KB`;
         setTimeout(() => progressEl.classList.remove('show'), 800);
-        return downloadURL;
+        return result.url;
       } catch (err) {
         statusEl.className = 'upload-status error';
         statusEl.textContent = '✕ ' + err.message;
